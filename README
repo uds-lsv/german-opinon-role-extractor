@@ -1,0 +1,302 @@
+System for the Extraction of Subjective Expressions, Sentiment Sources and Sentiment Targets
+from German Text
+
+RUN 
+=====
+For running the program, the Main class of the program has to be executed.
+Via the unix command line, this can be achieved in the following way (the current directory has to be the directory where the System folder is saved).
+
+% cd bin
+% java -cp .:<path-to-germanetapi-jar> Main <path-to-configuration-file>
+
+The location of the GermaNet API is given below.
+
+Java Runtime 1.5 or higher should be used.
+In the above case, if no path to the configuration file is specified, the default configuration file will be used.
+The path of the default configuration file is data/config.txt. 
+The raw text file which is analyzed by default contains 500 sentences from the Huge German Corpus (HGC).
+These sentences in turn contain sentiment expressions from the Zurcher Sentiment Lexicon.
+
+PREPROCESSING
+==============
+This system expects the data to be processed to be already preprocessed by various NLP analyses (i.e. part-of-speech tagging, parsing and named-entity recognition).
+The specific tools for this kind of preprocessing are not included in the release of this system.
+However, we provide shellscripts for installing and running these tools.
+Find out more information in subdirectory
+
+preprocessing
+
+
+CONFIGURATION FILE
+===================
+The variables listed below have to be specified in the configuration file.
+
+Note:
+- the ParZu dependency parse file (property DependencyPath), the Tiger XML file (property ConstituencyPath) and the GermaNER named entity file (property NamedEntityPath) must be generated from the raw text file.
+- all paths should be absolute paths.
+- the order in which the variables are listed is not relevant.
+- if the Tiger XML file is already given (and there exists a gold standard file for that particular XML file too), then this file should also be used for the system; otherwise the sentence-ids are no longer compatible and some evaluation against the gold standard will not be possible
+
+Common options
+--------------
+
+1. TextPath=<absolute-path-to-raw-input-text-file>
+
+For the raw input text file, every sentence should be specified on its own line. 
+Our algorithm will neither change the sentence boundaries nor the tokenization.
+
+
+2. DependencyPath=<absolute-path-to-dependency-parse-file>
+
+The dependency parse file has to be created with the Zurich DependencyParser for German, which can be found here: http://kitt.cl.uzh.ch/kitt/parzu/.
+More information about this tool can be found in the preprocessing-subdirectory.
+
+
+3. ConstituencyPath=<absolute-path-to-tiger-xml-file>
+
+Use the Berkeley Parser with a German grammar to create the constituency structure for the raw input.
+The parser can be found here: https://code.google.com/p/berkeleyparser/
+More information about this tool can be found in the preprocessing-subdirectory.
+
+
+4. OutputPath=<absolute-path-to-output-file>
+
+The output file is a Salsa XML corpus with annotated sentiment frames.
+It can be best visualized and modified with the help of the SALTO tool, which can be found here: http://www.coli.uni-saarland.de/projects/salsa/page.php?id=software
+
+
+5. FindSources=<True> or <False>
+
+If FindSources is set to "True", modules attempt to find sources for subjective expressions.
+
+
+6. FindTargets=<True> or <False>
+
+If FindTargets is set to "True", modules attempt to find targets for subjective expressions.
+
+
+Options for the classic (lexical) module
+----------------------------------------
+
+0. UseClassicModule=<True> or <False>
+
+Enable this module. All options below are only mandatory if this option is true.
+
+
+1. LexiconPath=<absolute-path-to-sentiment-lexicon>
+
+A sentiment lexicon entry should have the general form:
+lemma [part-of-speech] [syntactic-function(s)-of-sentiment-source] [syntactic-function(s)-of-sentiment-target]
+
+An example entry would be:
+
+hate [verb] [subj] [obja, objc]
+
+To see which labels can be used to specify syntactic functions, take a look at the opinion role lexica in data.
+To check whether the rules of the sentiment lexicon you are using are valid, you can use the class CheckLex in src.
+
+
+2. NormalizeDependencyGraphs=<True> or <False>
+
+Note that if this variable is set to "False", a lot of sentiment sources and targets will not be found due to this fact, since the algorithm relies on the sentiment sources and targets being the direct dependents of the sentiment word.
+The normalization step is therefore recommended.
+
+
+3. PersonCheck=<True> or <False>
+
+If this variable is set to "True", sentiment sources which are not a person will be filtered.
+We consider a sentiment source as a person if one of the following things hold:
+
+a) the head of the sentiment source is a named entity referring to a person or organization, i.e. Barack Obama (where Obama is the head).
+b) the sentiment source is a proper noun referring to a person or group of person
+c) the sentiment source is a personal or relative pronoun
+
+
+4. NamedEntityPath=<absolute-path-to-named-entity-file> [Mandatory only if PersonCheck is set to "True"]
+
+We used GermaNER for named entity recognition: https://www.lt.informatik.tu-darmstadt.de/en/software/germaner/
+More information about this tool can be found in the preprocessing-subdirectory.
+
+5. GermaNetDir=<absolute-path-to-germanet-directory> [Mandatory if PersonCheck is set to "True" or if MorphologyCheck is set to "True"]
+
+This release does NOT include GermaNet.
+In order to use GermaNet, you need to apply for a license of that resource.
+Our system works with GermaNet Version 8.0.
+For more information as to obtain this resource, please check the following URL:
+http://www.sfs.uni-tuebingen.de/GermaNet/
+
+In addition to the GermaNet-database, you also need the GermaNet API.
+You need the API for GermaNet Version 8.0, that is, GermaNetApi8.0.jar.
+The API has to be added as a library to the classpath.
+For more information as to obtain this software, please check the following URL:
+http://www.sfs.uni-tuebingen.de/lsd/tools.shtml
+
+6. MorphologyCheck=<True> or <False>  [GermaNetDir must also be provided if set to "True"]
+
+If this variable is set to "True", a pre-processing step will be performed which attempts to simplify morphologically complex noun lemmas down to
+a sub-lemma which can be used by other components of the system.  The MorphologyCheck can be used to search nouns for sub-lemmas which match
+sentiment expression, and it can be used to search nouns for sub-lemmas which match the Person criteria of the Person check.
+
+The MorphologyCheck process searches for sub-lemmas based on two switches:  If PersonCheck is set to "True" the system will search nouns for
+ for sub-lemmas which match as a person. If MorphologySentimentOff is set to "True" the system will not search for Nouns which match as a 
+ sentiment expression.  The MorphologySentimentOff is set to "False" by default which means that it will normally search for sub-lemmas which
+ match sentiment expressions.
+
+RECOMMENDATION: set this parameter to <False>
+(Our preprocessing shellscripts do NOT support morphological processing necessary for this functionality.)
+
+7. MorphologySentimentOff=<True> or <False> 
+
+This variable allows the user to turn the sentiment portion of the Morphology checker off if set to "True".  If set to "False" the 
+system will perform the morphology check including a check of nouns for sub-lemmas which match sentiment expressions.
+
+RECOMMENDATION: set this parameter to <False>
+(Our preprocessing shellscripts do NOT support morphological processing necessary for this functionality.)
+
+8. MorphologyPath=<absolute-path-to-the-morphology-file> [Mandatory if MorphologyCheck is set to true.]
+
+The morphology file is generated using a separate java program, and the Morphisto morphological parser. For instructions on how to generate the 
+morphology file, please refer to the README located in the MorphistoAndTextProcessing folder.
+(Our preprocessing shellscripts do NOT support morphological processing necessary for this functionality.)
+
+9. useFlexibleMWEs=<True> or <False>
+
+If useFlexibleMWEs is set to "True", the multi-word expressions in the opinion role lexicon of type 'mwe' will be interpreted in a flexible manner. This allows matching that generalizes over the possessive pronouns, reflexive pronouns, einen/keinen, and some others.
+
+Options for the grammar induced module
+--------------------------------------
+
+0. UseGrammarInducedModule=<True> or <False>
+
+All options below are only mandatory if this option is true.
+
+
+1. UseDefaultModalVerbs=<True> or <False>
+2. CustomModalVerbLemmas=<comma-separated list> [Mandatory if UseDefaultModalVerbs and GIMTriggerModal are True]
+
+Configures which modal verbs trigger a subjective expression. Setting UseDefaultModalVerbs=True is equivalent to setting
+CustomModalVerbLemmas=können,sollen,müssen,dürfen
+
+
+3. GIMTriggerModal=<True> or <False>
+
+If true, clauses that contain one of the modal verbs configured in (1) and (2) trigger a subjective expression.
+
+
+4. GIMTriggerImperative=<True> or <False>
+
+If true, clauses that contain an imperative verb trigger a subjective expression
+
+
+5. GIMTriggerFuture=<True> or <False>
+
+If true, clauses that contain an explicit future verb form trigger a subjective expression. This does not include
+sentences that use the present tense but semantically refer to the future.
+
+6. GIMTriggerSubjunctive2Wuerden=<True> or <False>
+
+If true, clauses that contain a subjunctive 2 sentence formed with "würden" trigger a SE. Subjunctive 1 and subjunctive
+2 without "würden" are not considered.
+
+
+Options for the preset subjective expression location module
+------------------------------------------------------------
+
+0. UsePresetSELocationModule=<True> or <False>
+
+This module is used to set frames and detect sources/targets in the case that the locations of subjective expressions 
+are known and can be found in a Salsa XML file.
+Sources and targets are found by either using default rules or lexicon rules, depending on the config value of ignoreLexicon.
+This module includes the functionality of the other two modules and should thus never be used in conjunction with them.
+Consequently, the options for the other two modules are relevant for the preset SE location module as well.
+
+All options below are only mandatory if this option is true.
+
+1. SubjectiveExpressionLocationPath=<absolute-path-to-file-with-subjective-expression-frames>
+
+The file containing information about the location of subjective expressions needs to be in the Salsa Tiger XML format.
+SE locations can be given as shown in the following example:
+<frame name="SubjectiveExpression" id="s608_f1">
+						<target>
+							<fenode idref="s608_3"/>
+						</target>
+			</frame>
+			
+			
+2. IgnoreLexicon=<True> or <False>
+
+Determines whether to apply rules from a sentiment lexicon to find sources and targets (if IgnoreLexicon is set to "False"),
+or to use default rules.
+
+
+EVALUATION
+===================
+All necessary data and tools are in subdirectory evaluation.
+For more information, see the README file in that directory.
+
+
+FURTHER DOCUMENTATION
+=====================
+Further documentation in javadoc can be found in subdirectory
+doc
+Open with your browser doc/index.html
+
+
+USAGE/LICENSE
+===================
+This software is free to use for research purposes.
+If you use it for your research, please acknowledge this software by citing Wiegand et al. (2016) 
+(Full bibliographic information, see References.)
+
+If you intend to use this software for commercial purposes, please contact the owner of this resource (see Contact Information).
+
+
+ACKNOWLEDGEMENTS
+===================
+This work was partially supported by the German Research Foundation (DFG) under grant WI 4204/2-1.
+
+Our software package also includes the Java API to process the SALSA XML corpora:
+http://www.coli.uni-saarland.de/projects/salsa/page.php?id=software
+implemented by members of the SALSA-project at Saarland University.
+Our software package also includes the Zurcher Polart-sentiment lexicon (Klenner et al., 2009)
+We thank the SALSA-project and the Department for Computational Linguistics at Zurich University (Manfred Klenner)
+for letting us use and redistribute their resources.
+
+
+CONTACT INFORMATION
+===================
+Please direct any questions that you have about this software to Michael Wiegand at Saarland University.
+
+Michael Wiegand	      email: Michael.Wiegand@lsv.uni-saarland.de
+
+
+REFERENCES
+===================
+Manfred Klenner, Angela Fahrni and Stefanos Petrakis
+   "PolArt: A Robust Tool for Sentiment Analysis",
+    in Proceedings of the Nordic Conference on Computational Linguistics (NoDaLiDa), pages 235-238, Odense, Denmark.
+
+
+
+Michael Wiegand, Nadisha-Marie Aliman, Tatjana Anikina, Patrick Carroll, Margarita Chikobava, Erik Hahn, Marina Haid, Katja Koenig, Lenoie Lapp, Artuur Leeuwenberg, Martin Wolf, Maximilian Wolf
+  "Saarland University's Participation in the Second Shared Task on Source, Subjective Expression and Target Extraction from Political Speeches (STEPS)"
+  in Proceedings of the Workshop of the Interest Group on German Sentiment Analysis, Bochumer Linguistische Arbeitsberichte, 2016.
+
+-----------------------------------------------------------
+
+Nadish-Marie Aliman
+Christine Bocionek
+Patrick Carroll
+Andreas Conrad
+Erik Hahn
+Marina Haid
+Katja Koenig
+Gregor Linn
+Artuur Leeuwenberg
+Lennart Schmeling
+Martin Wolf
+Maximilian Wolf
+Michael Wiegand
+
+version 2.0
+last modified 10/04/16

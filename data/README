@@ -1,0 +1,29 @@
+In this directory you find:
+
+config.txt
+configuration file with default paths already set.
+
+hgcSample.raw.rand500.txt	
+500 sentences extracted from the Huge German Corpus (HGC).
+Every sentence contains at least a sentiment expression (from the Zurich Sentiment Lexicon).
+Therefore, this sample is not representative for HGC.
+
+hgc_tagged.txt
+500 sentences from above tagged with named-entity information.
+
+hgcSample.parZu.rand500.txt
+500 sentences from above parsed with ParZu dependency parser.
+
+hgcSample.berkeleyParse.rand500.txt
+500 sentences from above parsed with Berkeley constituency parser.
+
+hgcSample.tiger.rand500.xml
+hgcSample.berkeleyParse.rand500.txt converted to TigerXML.
+
+opinionRoleLexicon.defaultRules.txt
+Zurich Sentiment lexicon enriched with default rules for opinion source/target extraction.
+There is one rule for each part of speech, i.e. verbs, nouns and adjectives.
+There is also a type mwe, for multi-word expressions.
+The words in the expression should be separated by an underscore.
+!If a source or target edge is unknown, do not leave it blank, but use a hyphen instead.
+e.g. lange_Gesichter_machen[mwe][subj][-] and NOT: lange_Gesichter_machen[mwe][subj][] 

@@ -1,0 +1,27 @@
+#Mon Mar 23 13:19:00 CET 2015
+FindSources=True
+FindTargets=True
+PersonCheck=True
+LexiconPath=/home/isha/git/softwareproject_sentiment_analysis_ss_2016/System/data/opinionRoleLexicon.defaultRules.withMwe2+1.txt
+OutputPath=/home/isha/git/softwareproject_sentiment_analysis_ss_2016/System/data/results.xml
+UseDefaultModalVerbs=True
+GermaNetDir=/home/isha/javaWorkspace/softwareproject_sentiment_analysis_ss_2016/GermaNetV80/GN_V80_XML
+DependencyPath=/home/isha/git/softwareproject_sentiment_analysis_ss_2016/System/data/shata16_training_adjudicated.parzu.txt
+NormalizeDependencyGraphs=True
+IgnoreLexicon=False
+UseClassicModule=True
+UseGrammarInducedModule=True
+UsePresetSELocationModule=True
+NamedEntityPath=/home/isha/git/softwareproject_sentiment_analysis_ss_2016/System/data/shata16_training_adjudicated.neTagged.txt
+ConstituencyPath=/home/isha/git/softwareproject_sentiment_analysis_ss_2016/System/data/shata16_training_adjudicated.tigerWithoutSemanticAnnotation.xml
+SubjectiveExpressionLocationPath=/home/isha/git/softwareproject_sentiment_analysis_ss_2016/System/data/shata14_adjudicated(noSourceTarget).xml
+TextPath=/home/isha/git/softwareproject_sentiment_analysis_ss_2016/System/data/shata16_training_adjudicated.raw.txt
+CustomModalVerbLemmas=
+MorphologyCheck=False
+MorphologySentimentOff=False
+MorphologyPath=
+useFlexibleMWEs=True
+GIMTriggerFuture=True
+GIMTriggerImperative=True
+GIMTriggerModal=True
+GIMTriggerSubjunctive2Wuerden=True

@@ -1,0 +1,14 @@
+# Add the paths INCLUDING the executable of the tool itself, for examples see the pre-entered paths
+# Path to parZu
+PATHTOPARZU="/home/test/Softwareprojekt/System/preprocessing/install_script/ParZu/parzu"
+# Path to BerkeleyParser
+PATHTOBERKELEYPARSER="/home/test/Softwareprojekt/System/preprocessing/install_script/BerkeleyParser/BerkeleyParser-1.7.jar"
+# Path to Berkeley Grammar
+PATHTOBERKELEYGRAMMAR="/home/test/Softwareprojekt/System/preprocessing/install_script/BerkeleyParser/ger_sm5.gr"
+# Path to LinguaAlign, executable is bin/convert_treebank
+PATHTOLINGUAALIGN="/home/test/Softwareprojekt/System/preprocessing/install_script/Lingua-Align-0.04/bin/convert_treebank"
+# Depending on what system you use, enter the correct path (32bit or 64bit system)
+# Path to GermaNER 64 bit
+PATHTOGERMANER64="/home/test/Softwareprojekt/System/preprocessing/install_script/GermaNER/GermaNER-09-09-2015.jar"
+# Path to GermaNER 32 bit
+PATHTOGERMANER32="/home/test/Softwareprojekt/System/preprocessing/install_script/GermaNER/GermaNER-nofb-09-09-2015.jar"

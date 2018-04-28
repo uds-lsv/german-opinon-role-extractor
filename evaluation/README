@@ -1,0 +1,19 @@
+This directory contains data and tools for evaluating the system on the STEPS shared task data 2014 and 2016.
+
+contents of the subdirectories:
+
+evaltool:
+This subdirectory contains the software to carry out quantitative evaluation.
+A readme-file is included with further information.
+
+goldstandard:
+This subdirectory contains the gold standard data for the STEPS shared tasks 2014 (steps2014-testdaten.adjudicated.xml) and 2016 (steps2016-testdaten.xml).
+Note that the gold standard file for 2014 is the adjudicated version released in 2016.
+
+input2014:
+This directory contains preprocessed input from the STEPS shared task 2014-test data.
+These data (raw text, parZu-dependency parse and named entity recognition) can be directly used by the system as input.
+
+input2016:
+This directory contains preprocessed input from the STEPS shared task 2016-test data.
+These data (raw text, parZu-dependency parse and named entity recognition) can be directly used by the system as input.

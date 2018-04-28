@@ -1,0 +1,12 @@
+In this subdirectory you find information on the preprocessing by NLP tools that is necessary in order to run the system.
+
+We support an installation script.
+You find more information about that in subdirectory:
+install_script
+
+Since the installation script has only been tested under Ubuntu 16.04 LTS and may no longer work if websites / git repositories of the tools change; we provide more detailed installation instructions for manual installation of the individual tools in subdirectory:
+preprocessing_script
+
+We support a shell-script which runs all NLP tools to do the preprocessing expected by our system.
+You find more information about that in subdirectory:
+preprocessing_script
